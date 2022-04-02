@@ -1,14 +1,20 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:payment_app/configs.dart';
+import 'package:payment_app/models/payment_intent.dart';
 
 class PaymentController extends GetxController {
-  Future<void> makePayment(
-      {required String amount, required String currency}) async {
+  Future<void> makePayment({
+    required String amount,
+    required String currency,
+  }) async {
     try {
       final paymentIntentData = await createPaymentIntent(amount, currency);
       if (paymentIntentData != null) {
@@ -19,9 +25,9 @@ class PaymentController extends GetxController {
             testEnv: true,
             merchantCountryCode: 'US',
             merchantDisplayName: 'Prospects',
-            customerId: paymentIntentData!['customer'],
-            paymentIntentClientSecret: paymentIntentData!['client_secret'],
-            customerEphemeralKeySecret: paymentIntentData!['ephemeralKey'],
+            customerId: paymentIntentData.customer,
+            paymentIntentClientSecret: paymentIntentData.clientSecret,
+            customerEphemeralKeySecret: paymentIntentData.ephemeralKey,
           ),
         );
         displayPaymentSheet();
@@ -31,7 +37,7 @@ class PaymentController extends GetxController {
     }
   }
 
-  displayPaymentSheet() async {
+  Future<void> displayPaymentSheet()  async {
     try {
       await Stripe.instance.presentPaymentSheet();
       Get.snackbar(
@@ -54,7 +60,10 @@ class PaymentController extends GetxController {
     }
   }
 
-  Future createPaymentIntent(String amount, String currency) async {
+  Future<PaymentIntentModel?> createPaymentIntent(
+    String amount,
+    String currency,
+  ) async {
     try {
       final Map<String, dynamic> body = {
         'amount': calculateAmount(amount),
@@ -72,12 +81,20 @@ class PaymentController extends GetxController {
       );
       print(response.statusCode);
       if (response.statusCode == 200) {
-        log(response.body);
-        return jsonDecode(response.body);
+        final jsonData = jsonDecode(response.body);
+        final data = PaymentIntentModel.fromJson(
+          Map<String, dynamic>.from(jsonData as Map),
+        );
+        return data;
       }
+    } on HttpException catch (err) {
+      print(err.message);
+    } on PlatformException catch (err) {
+      print('${err.message}');
     } catch (err) {
-      print('err charging user: ${err.toString()}');
+      print('$err');
     }
+    return null;
   }
 
   String calculateAmount(String amount) {
