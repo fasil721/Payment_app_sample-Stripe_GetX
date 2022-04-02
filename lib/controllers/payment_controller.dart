@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:payment_app/configs.dart';
+import 'package:payment_app/configs/configs.dart';
 import 'package:payment_app/models/payment_intent.dart';
 
 class PaymentController extends GetxController {
@@ -23,7 +23,8 @@ class PaymentController extends GetxController {
             applePay: true,
             googlePay: true,
             testEnv: true,
-            merchantCountryCode: 'US',
+            merchantCountryCode: 'IN',
+            allowsDelayedPaymentMethods: true,
             merchantDisplayName: 'Prospects',
             customerId: paymentIntentData.customer,
             paymentIntentClientSecret: paymentIntentData.clientSecret,
@@ -37,7 +38,7 @@ class PaymentController extends GetxController {
     }
   }
 
-  Future<void> displayPaymentSheet()  async {
+  Future<void> displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet();
       Get.snackbar(
@@ -65,7 +66,7 @@ class PaymentController extends GetxController {
     String currency,
   ) async {
     try {
-      final Map<String, dynamic> body = {
+      final body = {
         'amount': calculateAmount(amount),
         'currency': currency,
         'payment_method_types[]': 'card'

@@ -3,7 +3,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
-import 'package:payment_app/configs.dart';
+import 'package:payment_app/configs/configs.dart';
 import 'package:payment_app/pages/home_page.dart';
 
 void main() {
