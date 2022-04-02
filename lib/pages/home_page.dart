@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:payment_app/controllers/payment_controller.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // final PaymentController controller = Get.put(PaymentController());
+    final controller = Get.put(PaymentController());
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -13,7 +15,7 @@ class HomePage extends StatelessWidget {
           Center(
             child: InkWell(
               onTap: () {
-                // controller.makePayment(amount: '5', currency: 'USD');
+                controller.makePayment(amount: '5', currency: 'USD');
               },
               child: Ink(
                 decoration: BoxDecoration(

@@ -12,12 +12,12 @@ void main() {
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/home',
       transitionDuration: const Duration(milliseconds: 500),
       defaultTransition: Transition.fadeIn,
       getPages: [
         GetPage(
-          name: '/',
+          name: '/home',
           page: () => const HomePage(),
         ),
       ],
